@@ -1,5 +1,5 @@
 fun main() {
-    val user1 = User("Sergey", "0168", 86399)
+    val user1 = User("Sergey", "0168", 50400)
     println(user1.run { agoToText(timeAgo) })
 }
 
@@ -18,41 +18,36 @@ data class User(val name: String, val id: String, var timeAgo: Int) {
         val day = "вчера"
         val dayTwoFour = "позовчера"
 
-        var time = when {
-            timeAgo in 0 until 60 -> timeAgo
-            timeAgo in 60 until (60 * 60) -> timeAgo / 60
-            timeAgo in (60 * 60) until (60 * 60) * 24 -> (timeAgo / 60) / 60
-            timeAgo in (60 * 60) * 24 until ((60 * 60) * 24) * 3 -> ((timeAgo / 60) / 60) / 24
+        val time = when (timeAgo) {
+            in 0 until 60 -> timeAgo
+            in 60 until (60 * 60) -> timeAgo / 60
+            in (60 * 60) until (60 * 60) * 24 -> (timeAgo / 60) / 60
+            in (60 * 60) * 24 until ((60 * 60) * 24) * 3 -> ((timeAgo / 60) / 60) / 24
             else -> return "$name был в сети давно"
         }
 
-        var case = when {
-            timeAgo in 0 until 60 -> when {
+        val case = when (timeAgo) {
+            in 0 until 60 -> when {
                 time % 10 == 1 && time % 100 != 11 -> sec
-                time % 10 in 2..4 -> secTwoFour
+                time % 10 in 2..4 && timeAgo !in 10..20-> secTwoFour
                 else -> secBeforeTwenty
             }
-
-            timeAgo in 60 until (60 * 60) -> when {
+            in 60 until (60 * 60) -> when {
                 time % 10 == 1 && time % 100 != 11 -> min
-                time % 10 in 2..4 -> minTwoFour
+                time % 10 in 2..4 && time !in 10..20 -> minTwoFour
                 else -> minBeforeTwenty
             }
-
-            timeAgo in (60 * 60) until (60 * 60) * 24 -> when {
+            in (60 * 60) until (60 * 60) * 24 -> when {
                 time % 10 == 1 && time % 100 != 11 -> hour
-                time % 10 in 2..4 -> hourTwoFour
+                time % 10 in 2..4 && time !in 10..20 -> hourTwoFour
                 else -> hourBeforeTwenty
             }
-
-            timeAgo in (60 * 60) * 24 until ((60 * 60) * 24) * 3 -> when (timeAgo) {
-                in (60 * 60) * 24 until ((60 * 60) * 24) * 2 -> return "$name был в сети $day"
-                in ((60 * 60) * 24) * 2 until ((60 * 60) * 24) * 3 -> return "$name был в сети $dayTwoFour"
-                else -> return "$name был в сети давно"
+            in (60 * 60) * 24 until ((60 * 60) * 24) * 3 -> when (timeAgo) {
+                in (60 * 60) * 24 until ((60 * 60) * 24) * 2 -> "$name был в сети $day"
+                in ((60 * 60) * 24) * 2 until ((60 * 60) * 24) * 3 -> "$name был в сети $dayTwoFour"
+                else -> "$name был в сети давно"
             }
-
             else -> return "$name был в сети давно"
-
         }
 
 
